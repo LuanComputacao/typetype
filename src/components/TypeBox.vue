@@ -1,7 +1,7 @@
 <template>
     <div>
         <div v-if="!lock">
-          <input type="text" class="current-word" name="current-word" :value="word" @input="riseTyping" >
+          <input v-focus type="text" class="current-word" name="current-word" :value="word" @input="riseTyping" >
         </div>
         <div v-else>
           Wait to type ...

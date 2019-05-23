@@ -84,11 +84,14 @@ $yellow-off: #999955;
   &__semaphore{
     border-width: 1px;
     border-style: solid;
-    border-radius: 4px;
     margin: auto;
     padding: 10px;
     background-color: #333333;
     display: inline-block;
+    outline-width: 2px;
+    outline-style: solid;
+    outline-offset: 0px;
+
     &--red{
       border-color: $red-on;
     }

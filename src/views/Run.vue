@@ -30,7 +30,7 @@ export default {
 
   data () {
     return {
-      timer: 6,
+      timer: 3,
       inputLock: true,
       wordRegex: /[\w\u00E0-\u00FC]* ?/,
       quote: 'Olá mundo novo e lindo',
