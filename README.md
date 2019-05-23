@@ -1,5 +1,8 @@
 # typetype
 
+It's an app to run against other typists over the world.
+
+
 ## Project setup
 ```
 npm install
@@ -37,3 +40,13 @@ npm run test:unit
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+
+## How it works
+* (Doing) Metrics to measure typing [Analysis of Text Entry Performance Metrics ](https://www.asarif.com/pub/Arif_TIC-STH2009.pdf)
+* (Todo) Uses [Levenshtein distance](https://en.wikipedia.org/wiki/Levenshtein_distance) to show what you need to change in the input box. 
+
+
+## Todo
+
+* [Damerau Levenshtein distance](https://en.wikipedia.org/wiki/Damerau%E2%80%93Levenshtein_distance)
