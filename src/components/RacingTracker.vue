@@ -1,5 +1,6 @@
 <template>
-    <div>
+    <div class="racing-tracker">
+        <div>{{ me }}</div>
         <div class="racer" v-for="(racer, key) in racers" :key="key">
             <div class="racer__description">
                 {{racer.name}} <span class="racer__username">{{racer.username}}</span>
@@ -12,18 +13,15 @@
 <script>
 export default {
   name: 'RacingTracker',
-
   props: {
+    me: {
+      type: Object,
+      required: true,
+      default: () => {}
+    },
     racers: {
       type: Array,
-      required: true,
-      default: () => [
-        {
-          name: 'You',
-          username: 'you',
-          progress: 0
-        }
-      ]
+      required: true
     }
   }
 }
