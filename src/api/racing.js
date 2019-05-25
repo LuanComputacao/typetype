@@ -11,7 +11,7 @@ const _quotes = [
 function getRandonQuote () {
   let max = 4
   let min = 1
-  let id = Math.floor(Math.random() * (max - min + 1)) + min
+  let id = Math.floor(Math.random(Math.random()) * (max - min + 1)) + min
   return _quotes.find(q => q.id === id)
 }
 
