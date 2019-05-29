@@ -34,7 +34,7 @@ export default {
           }
         }
         resolve(racing)
-      }, 6000)
+      }, 2000)
     })
   }
 }

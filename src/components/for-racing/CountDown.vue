@@ -67,15 +67,8 @@ export default {
 <style lang="scss" scoped>
 
 $diameter: 20px;
-$green-on: #55ff55;
-$green-off: #559955;
-$red-on: #ff5555;
-$red-off: #995555;
-$yellow-on: #ffff55;
-$yellow-off: #999955;
 
 .count-down{
-  border: solid 1px #555555;
 
   &__counter{
     font-size: 18px;
@@ -86,7 +79,7 @@ $yellow-off: #999955;
     border-style: solid;
     margin: auto;
     padding: 10px;
-    background-color: #333333;
+    background-color: $grey-panel-on;
     display: inline-block;
     outline-width: 2px;
     outline-style: solid;

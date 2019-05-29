@@ -56,7 +56,7 @@ export default {
 
   methods: {
     processHead (w, t) {
-      if (w.match(t)) {
+      if (w.startsWith(t)) {
         return t
       } else {
         return this.processHead(w, t.slice(0, -1))

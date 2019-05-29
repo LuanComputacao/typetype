@@ -1,15 +1,14 @@
 <template>
     <div>
         <div>
-          <div v-if="loadingRacing">
-            <img alt="Vue logo" src="../assets/flag.gif">
+          <div v-if="racing.loading" class="run__loadin-flag">
+            <div>Loading text</div>
+            <img class="run__loadin-flag__img" alt="Vue logo" src="../assets/flag.gif">
           </div>
-          <CountDown v-else :time="timer" @done="startRacing"></CountDown>
+          <CountDown v-else-if="!racing.started" :time="timer" @done="startRacing"></CountDown>
         </div>
-        <RacingTracker :racers="racers" :me="me"></RacingTracker>
-        <div>
-          {{racing}}
-          words: {{wordsTyped}}
+        <div class="racing-panel">
+          <RacingTracker :racers="racers" :me="me"></RacingTracker>
         </div>
         <QuoteBox :text="quoteText" :typed="typed" :current-word="currentWord" :current-word-typed="currentWordTyping"></QuoteBox>
         <TypeBox v-if="!typingDone" :lock="inputLock" :word="currentWordTyping" @input="updateRacing"></TypeBox>
@@ -38,31 +37,41 @@ export default {
       inputLock: true,
       timer: 3,
       typed: '',
-      quoteText: 'Therefore, is it perhaps appropriate to consider the US South as the northernmost reach of the Latin American and Caribbean world? Scholars of the seventeenth through nineteenth centuries would hardly object, as studies of slavery, emancipation, and the black diaspora have long connected the plantation colony of the South with those of Cuba, Brazil, Haiti, and Mexico.',
+      quoteText: 'Waiting your text',
       wordRegex: /[^ ]* ?/,
       wordsTyped: 0,
-      loadingRacing: true,
       me: {
         name: 'Me',
         username: 'me',
-        progress: 50,
+        progress: 0,
         wpm: 0,
         wpmHistory: []
       },
       racers: [
         {
-          name: 'You',
-          username: 'you',
-          progress: 50,
-          wpm: 0
-        },
-        {
           name: 'Friend',
           username: 'friend',
           progress: 30
+        },
+        {
+          name: 'Friend1',
+          username: 'friend',
+          progress: 0
+        },
+        {
+          name: 'Friend2',
+          username: 'friend',
+          progress: 100
+        },
+        {
+          name: 'Friend3',
+          username: 'friend',
+          progress: 70
         }
       ],
       racing: {
+        loading: true,
+        started: false,
         startedAt: 0,
         lastWordStartedAt: 0
       }
@@ -72,7 +81,7 @@ export default {
   created () {
     this.getRacing().then(() => {
       this.quoteText = this.sRacing.quote.text
-      this.loadingRacing = false
+      this.racing.loading = false
     })
   },
 
@@ -118,6 +127,7 @@ export default {
     },
 
     startRacing () {
+      this.racing.started = true
       this.startTimer()
       this.startTyping()
     },
@@ -165,3 +175,21 @@ export default {
 
 }
 </script>
+<style lang="scss" scoped>
+.carbon{
+  width: 300px;
+  height: 300px;
+}
+.run{
+  &__loadin-flag{
+    &__img{
+      height: 92px;
+    }
+  }
+}
+
+.racing-panel{
+  display: flex;
+  flex-direction: row;
+}
+</style>

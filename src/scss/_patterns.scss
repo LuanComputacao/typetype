@@ -1,0 +1,25 @@
+@mixin pattern-carbon($size: 1, $lighten: 0%){
+  
+  $carbon-1: lighten( #151515, $lighten );
+  $carbon-2: lighten( #222222, $lighten );
+  $carbon-3: lighten( #242424, $lighten );
+  $carbon-4: lighten( #1d1d1d, $lighten );
+  $carbon-5: lighten( #1b1b1b, $lighten );
+  $carbon-6: lighten( #1a1a1a, $lighten );
+  $carbon-7: lighten( #131313, $lighten );
+  $carbon-bg-size: 20px * $size;
+  $carbon-slice-size: 5px * $size;
+  $carbon-slice-size-2: 10px * $size;
+
+  
+  background:
+    linear-gradient(27deg, $carbon-1 $carbon-slice-size, transparent $carbon-slice-size) 0 $carbon-slice-size,
+    linear-gradient(207deg, $carbon-1 $carbon-slice-size, transparent $carbon-slice-size) $carbon-slice-size-2 0px,
+    linear-gradient(27deg, $carbon-2 $carbon-slice-size, transparent $carbon-slice-size) 0px $carbon-slice-size-2,
+    linear-gradient(207deg, $carbon-2 $carbon-slice-size, transparent $carbon-slice-size) $carbon-slice-size-2 $carbon-slice-size,
+    linear-gradient(90deg, $carbon-5 $carbon-slice-size-2, transparent $carbon-slice-size-2),
+    linear-gradient($carbon-4 25%, $carbon-6 25%, $carbon-6 50%, transparent 50%, transparent 75%, $carbon-3 75%, $carbon-3);
+  background-color: $carbon-7;
+  background-size: $carbon-bg-size $carbon-bg-size;
+  
+}
