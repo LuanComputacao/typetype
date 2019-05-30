@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
 import Run from './views/Run.vue'
+import Stompt from './views/Stompt.vue'
 
 Vue.use(Router)
 
@@ -16,6 +17,11 @@ export default new Router({
       path: '/run',
       name: 'run',
       component: Run
+    },
+    {
+      path: '/stompt',
+      name: 'stompt',
+      component: Stompt
     },
     {
       path: '/about',

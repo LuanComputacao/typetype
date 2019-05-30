@@ -2,6 +2,9 @@
 
 It's an app to run against other typists over the world.
 
+## WebSite
+[Type Type](https://luancomputacao.github.io/typetype/)
+
 
 ## Project setup
 ```
