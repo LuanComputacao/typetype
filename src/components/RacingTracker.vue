@@ -8,7 +8,9 @@
                 <div class="racer__username">({{racer.username}})</div>
               </div>
               <div class="racer__way">
-                <div class="racer__car" :style="{left: racer.progress + '%' }"/>
+                <div class="racer__car" :style="{left: racer.progress + '%' }">
+                  <RacingCar :carLane="key+1"/>
+                </div>
               </div>
               <div class="racer__stop"/>>
           </div>
@@ -18,12 +20,14 @@
 
 <script>
 import SpeedometerDigital from '@/components/for-racing/SpeedometerDigital.vue'
+import RacingCar from '@/components/for-racing/RacingCar.vue'
 
 export default {
   name: 'RacingTracker',
 
   components: {
-    SpeedometerDigital
+    SpeedometerDigital,
+    RacingCar
   },
 
   props: {
@@ -56,17 +60,17 @@ $car-width: 30;
 $car-heigth: 15;
 
 .racing-tracker{
-  width: 100%;
+  align-items: center;
   display: flex;
   flex-direction: row;
   justify-content: center;
-  align-items: center;
+  width: 100%;
 }
 
 .runners-progress{
-  width: 50%;
   display: flex;
   flex-direction: column;
+  width: 50%;
 }
 
 .racer{
@@ -76,12 +80,9 @@ $car-heigth: 15;
   @include pattern-carbon($size: 0.5, $lighten: 15%);
 
   &__car{
-    height: $car-heigth*1px;
-    width: $car-width*1px;
-    background-color: black;
-    border-radius: 1px 3px 3px 1px;
+    //  height: $car-heigth*1px;
+    //  width: $car-width*1px;
     position: relative;
-    box-shadow: 13px 0px 17px 1px $white-light, -16px 0 11px -1px $red-on;
     transition: left 2s;
     transition-timing-function: ease-out;
 
@@ -91,21 +92,21 @@ $car-heigth: 15;
   }
 
   &__description{
-    width: 100px;
-    color: $white-light;
     border-right: solid 2px $white-light;
+    color: $white-light;
+    width: 100px;
   }
 
   &__stop{
-    width: 10px;
     border-left: solid 2px $white-light;
+    width: 10px;
   }
 
   &__way{
+    align-items: center;
+    display: flex;
     width: 100%;
     padding: 4px 30px 4px 30px;
-    display: flex;
-    align-items: center;
   }
 }
 </style>
