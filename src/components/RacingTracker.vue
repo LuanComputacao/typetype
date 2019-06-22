@@ -7,12 +7,13 @@
                 <div>{{racer.name}}</div>
                 <div class="racer__username">({{racer.username}})</div>
               </div>
-              <div class="racer__way">
+              <div class="racer__way" >
+                <div class="way__runnable-path" :class="{'way__runnable-path--track': (key + 1) < allRacers.length}" >{{key}}</div>
                 <div class="racer__car" :style="{left: racer.progress + '%' }">
                   <RacingCar :carLane="key+1"/>
                 </div>
               </div>
-              <div class="racer__stop"/>>
+              <div class="racer__stop"/>
           </div>
         </div>
     </div>
@@ -56,8 +57,12 @@ export default {
 
 <style lang="scss" scoped>
 
+$description-width: 100;
+$racer-width: 600;
 $car-width: 30;
 $car-heigth: 15;
+$way-height: 32;
+$end-start-width: 2;
 
 .racing-tracker{
   align-items: center;
@@ -70,18 +75,16 @@ $car-heigth: 15;
 .runners-progress{
   display: flex;
   flex-direction: column;
-  width: 50%;
 }
 
 .racer{
   display: flex;
   flex-direction: row;
+  width: $racer-width*1px;
 
   @include pattern-carbon($size: 0.5, $lighten: 15%);
 
   &__car{
-    //  height: $car-heigth*1px;
-    //  width: $car-width*1px;
     position: relative;
     transition: left 2s;
     transition-timing-function: ease-out;
@@ -94,19 +97,38 @@ $car-heigth: 15;
   &__description{
     border-right: solid 2px $white-light;
     color: $white-light;
-    width: 100px;
+    width: $description-width*1px;
   }
 
   &__stop{
-    border-left: solid 2px $white-light;
-    width: 10px;
+    width: $car-width*1.5px;
   }
 
   &__way{
     align-items: center;
     display: flex;
-    width: 100%;
-    padding: 4px 30px 4px 30px;
+    width: $racer-width - $description-width * 1px;
+    padding: 4px 0 4px 0;
+    position: relative;
+  }
+}
+
+.way{
+  &__runnable-path{
+    border-style: dashed;
+    border-color: $white-light;
+    border-left-width: $end-start-width*1px;
+    border-right-width: $end-start-width*1px;
+    border-top-width: 0;
+    border-bottom-width: 0;
+    height: $way-height*1px;
+    width: $racer-width - $description-width - ($car-width*2.5)  * 1px;
+    position: absolute;
+    left: $car-width * 1px;
+
+    &--track{
+      border-bottom-width: $end-start-width * 0.5px;
+    }
   }
 }
 </style>

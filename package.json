@@ -1,5 +1,9 @@
 {
   "name": "typetype",
+  "description": "",
+  "repository": {},
+  "readme": "README.md",
+  "license": "",
   "version": "0.1.0",
   "private": true,
   "scripts": {

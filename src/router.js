@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Home from './views/Home.vue'
 import Run from './views/Run.vue'
 import Stompt from './views/Stompt.vue'
+import Train from './views/Train.vue'
 
 Vue.use(Router)
 
@@ -17,6 +18,11 @@ export default new Router({
       path: '/run',
       name: 'run',
       component: Run
+    },
+    {
+      path: '/training',
+      name: 'training',
+      component: Train
     },
     {
       path: '/stompt',

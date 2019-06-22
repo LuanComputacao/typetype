@@ -14,7 +14,12 @@ export default {
   props: {
     carModel: {
       type: String,
-      required: true
+      required: false
+    },
+
+    carWidth: {
+      type: Number,
+      default: 30
     },
 
     carLane: {

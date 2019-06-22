@@ -2,7 +2,8 @@
   <div id="app">
     <div id="nav">
       <router-link to="/">Home</router-link> |
-      <router-link :to="{name: 'run'}">Run</router-link> |
+      <router-link :to="{name: 'run'}" v-t="'main_menu--run'"/> |
+      <router-link :to="{name: 'training'}" v-t="'main_menu--train'"/> |
       <router-link to="/about">About</router-link>
     </div>
     <router-view/>
