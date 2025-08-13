@@ -1,4 +1,0 @@
---
-title: 'issue:: '
-labels: 'issue'
----

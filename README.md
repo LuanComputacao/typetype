@@ -1,56 +1,64 @@
-# typetype
+# typetype v2
 
-It's an app to run against other typists over the world.
+This template should help get you started developing with Vue 3 in Vite.
 
-## WebSite
-[Type Type](https://luancomputacao.github.io/typetype/)
+## Recommended IDE Setup
 
+[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
 
-## Project setup
-```
-npm install
-```
+## Type Support for `.vue` Imports in TS
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
 
-### Compiles and minifies for production
-```
-npm run build
-```
+## Customize configuration
 
-### Run your tests
-```
-npm run test
+See [Vite Configuration Reference](https://vite.dev/config/).
+
+## Project Setup
+
+```sh
+pnpm install
 ```
 
-### Lints and fixes files
-```
-npm run lint
-```
+### Compile and Hot-Reload for Development
 
-### Run your end-to-end tests
-```
-npm run test:e2e
+```sh
+pnpm dev
 ```
 
-### Run your unit tests
+### Type-Check, Compile and Minify for Production
+
+```sh
+pnpm build
 ```
-npm run test:unit
+
+### Run Unit Tests with [Vitest](https://vitest.dev/)
+
+```sh
+pnpm test:unit
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### Run End-to-End Tests with [Playwright](https://playwright.dev)
 
+```sh
+# Install browsers for the first run
+npx playwright install
 
-## How it works
-* It's a forced error correction conditional
+# When testing on CI, must build the project first
+pnpm build
 
+# Runs the end-to-end tests
+pnpm test:e2e
+# Runs the tests only on Chromium
+pnpm test:e2e --project=chromium
+# Runs the tests of a specific file
+pnpm test:e2e tests/example.spec.ts
+# Runs the tests in debug mode
+pnpm test:e2e --debug
+```
 
-## Todo
+### Lint with [ESLint](https://eslint.org/)
 
-* (Doing) Metrics to measure typing [Analysis of Text Entry Performance Metrics ](https://www.asarif.com/pub/Arif_TIC-STH2009.pdf)
-* (Todo) Uses [Levenshtein distance](https://en.wikipedia.org/wiki/Levenshtein_distance) to show what you need to change in the input box. 
-* [Damerau Levenshtein distance](https://en.wikipedia.org/wiki/Damerau%E2%80%93Levenshtein_distance)
+```sh
+pnpm lint
+```
