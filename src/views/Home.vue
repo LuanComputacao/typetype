@@ -21,6 +21,12 @@
         >
           🏎️ Teste de Velocidade
         </router-link>
+        <router-link
+          to="/race-run"
+          class="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 transition-colors"
+        >
+          🏁 Corrida de Digitação
+        </router-link>
       </div>
     </div>
 
