@@ -63,7 +63,10 @@ export const useRaceStore = defineStore('race', () => {
   const semaphore = ref({
     counter: 0,
     countdown: 3,
-    countdownRunning: false
+    maxCountdown: 3, // Maximum countdown seconds (controls number of semaphore lights)
+    countdownRunning: false,
+    amountOfLights: 2, // Number of lights to show (maxCountdown - 1)
+    visible: true // Controls semaphore visibility
   })
 
   // Internal state for calculations
@@ -123,8 +126,11 @@ export const useRaceStore = defineStore('race', () => {
 
     semaphore.value = {
       counter: 0,
-      countdown: 3,
-      countdownRunning: false
+      countdown: semaphore.value.maxCountdown,
+      maxCountdown: semaphore.value.maxCountdown,
+      amountOfLights: semaphore.value.maxCountdown - 1,
+      countdownRunning: false,
+      visible: true
     }
   }
 
@@ -132,11 +138,11 @@ export const useRaceStore = defineStore('race', () => {
     if (semaphore.value.countdownRunning) return
 
     semaphore.value.countdownRunning = true
-    semaphore.value.countdown = 3
+    semaphore.value.countdown = semaphore.value.maxCountdown
 
     const countdownInterval = setInterval(() => {
       semaphore.value.countdown--
-      semaphore.value.counter = (semaphore.value.counter + 1) % 6
+      semaphore.value.counter = (semaphore.value.counter + 1) % semaphore.value.maxCountdown
 
       if (semaphore.value.countdown <= 0) {
         clearInterval(countdownInterval)
@@ -151,7 +157,12 @@ export const useRaceStore = defineStore('race', () => {
     race.value.lastWordStartedAt = Date.now()
 
     semaphore.value.countdownRunning = false
-    semaphore.value.counter = 5 // Green light
+    semaphore.value.counter = semaphore.value.maxCountdown // Green light (final position)
+
+    // Hide semaphore after 1 second (x+1 logic)
+    setTimeout(() => {
+      semaphore.value.visible = false
+    }, 1000)
 
     typing.value.inputLocked = false
     typing.value.currentWord = getNextWord()
@@ -232,6 +243,19 @@ export const useRaceStore = defineStore('race', () => {
     initializeRace()
   }
 
+  const setMaxCountdown = (seconds: number) => {
+    console.log('setMaxCountdown chamado com:', seconds)
+    if (seconds > 0 && seconds <= 10) { // Reasonable limits
+      semaphore.value.maxCountdown = seconds
+      semaphore.value.countdown = seconds
+      semaphore.value.amountOfLights = seconds - 1 // Update amount of lights
+      console.log('Valores atualizados:', {
+        maxCountdown: semaphore.value.maxCountdown,
+        amountOfLights: semaphore.value.amountOfLights
+      })
+    }
+  }
+
   // Initialize on store creation
   initializeRace()
 
@@ -253,6 +277,7 @@ export const useRaceStore = defineStore('race', () => {
     initializeRace,
     startCountdown,
     updateTyping,
-    resetRace
+    resetRace,
+    setMaxCountdown
   }
 })

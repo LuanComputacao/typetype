@@ -34,20 +34,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineProps, onMounted, computed } from 'vue'
+import { defineProps, computed } from 'vue'
 
 const props = defineProps<{
   counter: number
+  amountOfLights?: number
   maxCounter?: number
 }>()
 
 const maxCounter = computed(() => props.maxCounter ?? 5)
 const counter = computed(() => props.counter ?? 1)
-const amountOfLights = ref(0)
-
-onMounted(() => {
-  amountOfLights.value = maxCounter.value - 1
-})
+const amountOfLights = computed(() => props.amountOfLights ?? 4)
 </script>
 
 <style lang="scss">

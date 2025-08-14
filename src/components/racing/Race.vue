@@ -8,7 +8,7 @@
     <!-- Pre-Race State with Semaphore -->
     <div v-else-if="!raceStore.race.started" class="pre-race">
       <div class="semaphore-container">
-        <SemaphoreLights :counter="raceStore.semaphore.counter" :max-counter="5" />
+        <SemaphoreLights :counter="raceStore.semaphore.counter" :max-counter="raceStore.semaphore.maxCountdown" :amount-of-lights="raceStore.semaphore.amountOfLights" />
       </div>
       <div class="countdown">
         <button @click="raceStore.startCountdown" class="start-btn" :disabled="raceStore.semaphore.countdownRunning">
@@ -19,6 +19,15 @@
 
     <!-- Race State -->
     <div v-else class="race-active">
+      <!-- Semaphore (visible for 1 second after race starts) -->
+      <div v-if="raceStore.semaphore.visible" class="semaphore-container race-semaphore">
+        <SemaphoreLights
+          :counter="raceStore.semaphore.counter"
+          :max-counter="raceStore.semaphore.maxCountdown"
+          :amount-of-lights="raceStore.semaphore.amountOfLights"
+          />
+      </div>
+
       <!-- Speedometer -->
       <div class="speedometer-container">
         <SpeedometerDigital
@@ -145,6 +154,15 @@ onMounted(() => {
   justify-content: center;
 }
 
+.race-semaphore {
+  position: absolute;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  transition: opacity 0.3s ease;
+}
+
 .countdown {
   text-align: center;
 }
@@ -175,6 +193,7 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  position: relative;
 }
 
 .speedometer-container {

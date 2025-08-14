@@ -17,6 +17,22 @@
 
     <!-- Main Race Component -->
     <div class="race-container">
+      <!-- Countdown Configuration (only when race not started) -->
+      <div v-if="!raceStore.race.started && !raceStore.race.completed" class="countdown-config">
+        <label for="countdown-select" class="config-label">⏱️ Countdown do Semáforo:</label>
+        <select
+          id="countdown-select"
+          v-model="selectedCountdown"
+          @change="updateCountdown"
+          class="countdown-select"
+          :disabled="raceStore.semaphore.countdownRunning"
+        >
+          <option value="3">3 segundos (2 luzes)</option>
+          <option value="5">5 segundos (4 luzes)</option>
+          <option value="7">7 segundos (6 luzes)</option>
+        </select>
+      </div>
+
       <Race @updateRacing="handleRaceUpdate" />
     </div>
 
@@ -102,9 +118,10 @@ interface RacerData {
 // Use the race store
 const raceStore = useRaceStore()
 
-// Reactive state for results only
+// Reactive state for results and configuration
 const showResults = ref(false)
 const raceStats = ref<RacerData | null>(null)
+const selectedCountdown = ref(raceStore.semaphore.maxCountdown)
 
 // Final stats for results using store data
 const finalStats = computed(() => ({
@@ -138,9 +155,15 @@ const handleRaceUpdate = (racer: RacerData) => {
   raceStats.value = racer
 }
 
+const updateCountdown = () => {
+  const newValue = Number(selectedCountdown.value)
+  raceStore.setMaxCountdown(newValue)
+}
+
 const restartRace = () => {
   showResults.value = false
   raceStats.value = null
+  selectedCountdown.value = raceStore.semaphore.maxCountdown
   raceStore.resetRace()
 }
 
@@ -192,6 +215,44 @@ const closeResults = () => {
   border-radius: 1rem;
   box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1);
   border: 2px solid #f3f4f6;
+}
+
+.countdown-config {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: #f8fafc;
+  border-radius: 0.5rem;
+  border: 1px solid #e2e8f0;
+}
+
+.config-label {
+  font-weight: 600;
+  color: #374151;
+  white-space: nowrap;
+}
+
+.countdown-select {
+  padding: 0.5rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  background: white;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: #ace82c;
+    box-shadow: 0 0 0 3px rgba(172, 232, 44, 0.1);
+  }
+
+  &:disabled {
+    background: #f3f4f6;
+    color: #6b7280;
+    cursor: not-allowed;
+  }
 }
 
 .instructions {
