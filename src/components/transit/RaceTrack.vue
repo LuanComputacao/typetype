@@ -41,7 +41,7 @@
 </template>
 
 <script setup lang="ts">
-import Car from '@/components/Car.vue'
+import Car from '@/components/driver/Car.vue'
 
 interface RaceCarProps {
   variant?: 1 | 2 | 3 | 4

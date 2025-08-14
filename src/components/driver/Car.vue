@@ -27,10 +27,10 @@
 import { computed } from 'vue'
 
 // Import SVGs as raw strings for direct manipulation
-import Car1Svg from '../assets/car_1.svg?raw'
-import Car2Svg from '../assets/car_2.svg?raw'
-import Car3Svg from '../assets/car_3.svg?raw'
-import Car4Svg from '../assets/car_4.svg?raw'
+import Car1Svg from '@/assets/car_1.svg?raw'
+import Car2Svg from '@/assets/car_2.svg?raw'
+import Car3Svg from '@/assets/car_3.svg?raw'
+import Car4Svg from '@/assets/car_4.svg?raw'
 
 interface Props {
   variant?: 1 | 2 | 3 | 4

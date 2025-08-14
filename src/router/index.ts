@@ -8,6 +8,11 @@ const router = createRouter({
       name: 'home',
       component: () => import('../views/Home.vue')
     },
+    {
+      path: '/speed-test',
+      name: 'speed-test',
+      component: () => import('../views/SpeedTest.vue')
+    },
   ],
 })
 

@@ -6,6 +6,24 @@
       configurações
     </p>
 
+    <!-- Navigation Menu -->
+    <div class="mb-8 text-center">
+      <div class="inline-flex gap-4 bg-gray-100 p-4 rounded-lg">
+        <router-link
+          to="/"
+          class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
+        >
+          🏠 Demonstrações
+        </router-link>
+        <router-link
+          to="/speed-test"
+          class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors"
+        >
+          🏎️ Teste de Velocidade
+        </router-link>
+      </div>
+    </div>
+
     <!-- Semaphore Lights Demo -->
     <div class="mb-12">
       <h2 class="text-3xl font-semibold mb-6 text-green-600">🚦 Componente Semáforo</h2>
@@ -590,7 +608,7 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 
 import SemaphoreLights from '@/components/transit/SemaphoreLights.vue'
-import Car from '@/components/Car.vue'
+import Car from '@/components/driver/Car.vue'
 import RaceTrack from '@/components/transit/RaceTrack.vue'
 import SpeedometerDigital from '@/components/driver/SpeedometerDigital.vue'
 
@@ -683,12 +701,12 @@ const startSpeedTest = () => {
   if (speedTestRunning.value) return
 
   speedTestRunning.value = true
-  
+
   speedTestIntervalId = setInterval(() => {
     // Simula variação na velocidade de digitação
     const targetSpeed = 40 + Math.random() * 80 // 40-120 w/m
     const targetLastWord = targetSpeed + (Math.random() - 0.5) * 20 // Variação na última palavra
-    
+
     // Suaviza a transição
     realtimeSpeed.value += (targetSpeed - realtimeSpeed.value) * 0.1
     realtimeLastWordSpeed.value += (Math.max(0, targetLastWord) - realtimeLastWordSpeed.value) * 0.15
