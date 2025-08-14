@@ -6,34 +6,12 @@
       <p class="text-lg text-center text-gray-600 mb-8">
         Digite o texto o mais rápido possível e compete contra o tempo!
       </p>
-      
+
       <!-- Navigation -->
       <div class="navigation mb-8">
         <router-link to="/" class="nav-link">🏠 Home</router-link>
         <router-link to="/speed-test" class="nav-link">📊 Speed Test</router-link>
         <span class="nav-link nav-link--active">🏁 Race Run</span>
-      </div>
-    </div>
-
-    <!-- Race Stats -->
-    <div class="race-stats mb-6">
-      <div class="stats-grid">
-        <div class="stat-card">
-          <h3 class="stat-label">WPM Atual</h3>
-          <p class="stat-value">{{ currentWPM }}</p>
-        </div>
-        <div class="stat-card">
-          <h3 class="stat-label">Progresso</h3>
-          <p class="stat-value">{{ currentProgress }}%</p>
-        </div>
-        <div class="stat-card">
-          <h3 class="stat-label">Palavras</h3>
-          <p class="stat-value">{{ wordsTyped }}</p>
-        </div>
-        <div class="stat-card">
-          <h3 class="stat-label">Tempo</h3>
-          <p class="stat-value">{{ formattedTime }}</p>
-        </div>
       </div>
     </div>
 
@@ -109,7 +87,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import Race from '@/components/racing/Race.vue'
 
 interface RacerData {
@@ -120,31 +98,19 @@ interface RacerData {
   wpmHistory?: number[]
 }
 
-// Reactive state
-const currentWPM = ref(0)
-const currentProgress = ref(0)
-const wordsTyped = ref(0)
-const startTime = ref<number | null>(null)
-const elapsedTime = ref(0)
+// Reactive state for results only
 const showResults = ref(false)
-
-// Timer
-let timerInterval: ReturnType<typeof setInterval> | null = null
+const raceStats = ref<RacerData | null>(null)
 
 // Final stats for results
 const finalStats = ref({
   wpm: 0,
   words: 0,
-  time: '0:00'
+  time: '0:00',
+  progress: 0
 })
 
 // Computed properties
-const formattedTime = computed(() => {
-  const minutes = Math.floor(elapsedTime.value / 60)
-  const seconds = elapsedTime.value % 60
-  return `${minutes}:${seconds.toString().padStart(2, '0')}`
-})
-
 const performanceLevel = computed(() => {
   const wpm = finalStats.value.wpm
   if (wpm >= 60) return '🚀 Excepcional'
@@ -156,63 +122,31 @@ const performanceLevel = computed(() => {
 
 // Methods
 const handleRaceUpdate = (racer: RacerData) => {
-  currentWPM.value = Math.round(racer.wpm || 0)
-  currentProgress.value = Math.round(racer.progress)
-  
-  // Start timer on first update
-  if (!startTime.value) {
-    startTime.value = Date.now()
-    startTimer()
-  }
-  
-  // Count words (estimate based on progress)
-  wordsTyped.value = Math.floor(currentProgress.value / 5) // Rough estimate
-  
+  raceStats.value = racer
+
   // Check if race is complete
-  if (currentProgress.value >= 100) {
+  if (racer.progress >= 100) {
     completeRace(racer)
   }
 }
 
-const startTimer = () => {
-  timerInterval = setInterval(() => {
-    if (startTime.value) {
-      elapsedTime.value = Math.floor((Date.now() - startTime.value) / 1000)
-    }
-  }, 1000)
-}
-
-const stopTimer = () => {
-  if (timerInterval) {
-    clearInterval(timerInterval)
-    timerInterval = null
-  }
-}
-
 const completeRace = (racer: RacerData) => {
-  stopTimer()
-  
   finalStats.value = {
     wpm: Math.round(racer.wpm || 0),
-    words: wordsTyped.value,
-    time: formattedTime.value
+    words: Math.floor(racer.progress / 5), // Estimate words based on progress
+    time: '0:00', // Time will be calculated in Race component
+    progress: Math.round(racer.progress)
   }
-  
-  showResults.value = true
+
+  setTimeout(() => {
+    showResults.value = true
+  }, 1000) // Show results after a brief delay
 }
 
 const restartRace = () => {
-  // Reset all stats
-  currentWPM.value = 0
-  currentProgress.value = 0
-  wordsTyped.value = 0
-  startTime.value = null
-  elapsedTime.value = 0
   showResults.value = false
-  
-  // Stop timer if running
-  stopTimer()
-  
+  raceStats.value = null
+
   // Reload the page to restart the race component
   window.location.reload()
 }
@@ -220,13 +154,6 @@ const restartRace = () => {
 const closeResults = () => {
   showResults.value = false
 }
-
-// Cleanup on unmount
-onMounted(() => {
-  return () => {
-    stopTimer()
-  }
-})
 </script>
 
 <style lang="scss" scoped>
@@ -254,55 +181,16 @@ onMounted(() => {
   border-radius: 0.5rem;
   text-decoration: none;
   transition: all 0.3s ease;
-  
+
   &:hover {
     background-color: #f3f4f6;
   }
-  
+
   &--active {
     background-color: #ace82c;
     color: white;
     font-weight: 600;
   }
-}
-
-.race-stats {
-  margin-bottom: 2rem;
-}
-
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-}
-
-.stat-card {
-  background: white;
-  padding: 1.5rem;
-  border-radius: 0.75rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  border: 2px solid #f3f4f6;
-  transition: all 0.3s ease;
-  
-  &:hover {
-    border-color: #ace82c;
-    transform: translateY(-2px);
-  }
-}
-
-.stat-label {
-  font-size: 0.875rem;
-  color: #6b7280;
-  margin-bottom: 0.5rem;
-  font-weight: 600;
-}
-
-.stat-value {
-  font-size: 2rem;
-  font-weight: bold;
-  color: #1f2937;
-  margin: 0;
 }
 
 .race-container {
@@ -369,7 +257,7 @@ onMounted(() => {
   justify-content: space-between;
   padding: 0.75rem 0;
   border-bottom: 1px solid #e5e7eb;
-  
+
   &:last-child {
     border-bottom: none;
     font-weight: bold;
@@ -400,20 +288,20 @@ onMounted(() => {
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  
+
   &-primary {
     background-color: #ace82c;
     color: white;
-    
+
     &:hover {
       background-color: #9bd327;
     }
   }
-  
+
   &-secondary {
     background-color: #6b7280;
     color: white;
-    
+
     &:hover {
       background-color: #4b5563;
     }
@@ -424,19 +312,19 @@ onMounted(() => {
   .race-run {
     padding: 1rem;
   }
-  
+
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   .instruction-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .results-content {
     padding: 2rem;
   }
-  
+
   .results-actions {
     flex-direction: column;
   }

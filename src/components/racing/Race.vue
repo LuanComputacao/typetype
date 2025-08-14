@@ -1,26 +1,67 @@
 <template>
-    <div>
-        <div>
-          <div v-if="racing.loading" class="run__loading-flag">
+    <div class="race-container">
+        <!-- Loading State -->
+        <div v-if="racing.loading" class="run__loading-flag">
             <div>Loading text</div>
-          </div>
-          <div v-else-if="!racing.started" class="countdown">
-            <button @click="startRacing" class="start-btn">Start Racing ({{ timer }}s)</button>
-          </div>
         </div>
-        <QuoteBox 
-          :text="quoteText" 
-          :typed="typed" 
-          :current-word="currentWord" 
-          :current-word-typed="currentWordTyping"
-        />
-        <TypeBox 
-          v-if="!typingDone" 
-          :lock="inputLock" 
-          :word="currentWordTyping" 
-          @input="updateRacing"
-          @update="updateRacing"
-        />
+
+        <!-- Pre-Race State with Semaphore -->
+        <div v-else-if="!racing.started" class="pre-race">
+            <div class="semaphore-container">
+                <SemaphoreLights :counter="semaphoreCounter" :max-counter="5" />
+            </div>
+            <div class="countdown">
+                <button @click="startCountdown" class="start-btn" :disabled="countdownRunning">
+                    {{ countdownRunning ? `Iniciando em ${timer}s` : 'Iniciar Corrida' }}
+                </button>
+            </div>
+        </div>
+
+        <!-- Race State -->
+        <div v-else class="race-active">
+            <!-- Speedometer -->
+            <div class="speedometer-container">
+                <SpeedometerDigital :velocity="currentWPM" :velocity-last-word="currentPartialWPM" />
+            </div>
+
+            <!-- Race Track with Car -->
+            <div class="racetrack-container">
+                <RaceTrack
+                    :lanes="1"
+                    track-height="120px"
+                    :cars="[{
+                        variant: 1,
+                        position: carPosition,
+                        lane: 1,
+                        speed: currentWPM,
+                        direction: 'right',
+                        size: 'medium',
+                        color: 'blue'
+                    }]"
+                />
+            </div>
+        </div>
+
+        <!-- Text Display and Input -->
+        <div class="typing-section">
+            <QuoteBox
+                :text="quoteText"
+                :typed="typed"
+                :current-word="currentWord"
+                :current-word-typed="currentWordTyping"
+            />
+            <TypeBox
+                v-if="!typingDone"
+                :lock="inputLock"
+                :word="currentWordTyping"
+                @input="updateRacing"
+                @update="updateRacing"
+            />
+            <div v-else class="race-completed">
+                <h2 class="text-2xl font-bold text-green-600">🎉 Corrida Finalizada!</h2>
+                <p class="text-lg">Velocidade final: {{ Math.round(me.wpm || 0) }} WPM</p>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -28,6 +69,9 @@
 import { ref, computed, onMounted } from 'vue'
 import QuoteBox from '@/components/typing/QuoteBox.vue'
 import TypeBox from '@/components/typing/TypeBox.vue'
+import SemaphoreLights from '@/components/transit/SemaphoreLights.vue'
+import SpeedometerDigital from '@/components/driver/SpeedometerDigital.vue'
+import RaceTrack from '@/components/transit/RaceTrack.vue'
 // import RacingTracker from '@/components/RacingTracker.vue'
 // import CountDown from '@/components/for-racing/CountDown.vue'
 
@@ -62,6 +106,16 @@ const quoteText = ref('The quick brown fox jumps over the lazy dog. This is a sa
 const wordsTyped = ref(0)
 const lastWordTyped = ref('')
 
+// New reactive data for components
+const semaphoreCounter = ref(0)
+const countdownRunning = ref(false)
+const currentWPM = ref(0)
+const currentPartialWPM = ref(0)
+
+// Countdown interval
+let countdownInterval: ReturnType<typeof setInterval> | null = null
+let semaphoreInterval: ReturnType<typeof setInterval> | null = null
+
 const wordRegex = /[^ ]* ?/
 
 const me = ref<Racer>({
@@ -82,6 +136,10 @@ const racing = ref<Racing>({
 // Computed
 const typingDone = computed(() => {
   return quoteText.value === typed.value
+})
+
+const carPosition = computed(() => {
+  return me.value.progress
 })
 
 // Methods
@@ -108,12 +166,43 @@ const getWPM = () => {
 }
 
 const registerCurrentVelocity = () => {
-  me.value.wpm = getWPM()
-  me.value.wpmHistory?.push(getPartialWPM())
+  const wpm = getWPM()
+  const partialWPM = getPartialWPM()
+
+  me.value.wpm = wpm
+  me.value.wpmHistory?.push(partialWPM)
+
+  // Update reactive values for components
+  currentWPM.value = wpm
+  currentPartialWPM.value = partialWPM
+}
+
+const startCountdown = () => {
+  if (countdownRunning.value) return
+
+  countdownRunning.value = true
+  timer.value = 3
+
+  // Start semaphore animation
+  semaphoreInterval = setInterval(() => {
+    semaphoreCounter.value = (semaphoreCounter.value + 1) % 6
+  }, 500)
+
+  // Start countdown
+  countdownInterval = setInterval(() => {
+    timer.value--
+    if (timer.value <= 0) {
+      clearInterval(countdownInterval!)
+      clearInterval(semaphoreInterval!)
+      startRacing()
+    }
+  }, 1000)
 }
 
 const startRacing = () => {
   racing.value.started = true
+  countdownRunning.value = false
+  semaphoreCounter.value = 5 // Green light
   startTimer()
   startTyping()
 }
@@ -164,50 +253,119 @@ onMounted(() => {
   //   quoteText.value = sRacing.quote.text
   //   racing.value.loading = false
   // })
-  
+
   // For now, just set a sample text
   racing.value.loading = false
 })
 </script>
 
 <style lang="scss" scoped>
-.carbon {
-  width: 300px;
-  height: 300px;
+.race-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 1rem;
 }
 
-.run {
-  &__loading-flag {
-    text-align: center;
-    padding: 20px;
-    
-    &__img {
-      height: 92px;
-    }
-  }
+.run__loading-flag {
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.2rem;
+  color: #6b7280;
+}
+
+.pre-race {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  padding: 2rem;
+}
+
+.semaphore-container {
+  display: flex;
+  justify-content: center;
 }
 
 .countdown {
   text-align: center;
-  padding: 20px;
 }
 
 .start-btn {
   background-color: #ace82c;
   color: white;
   border: none;
-  padding: 12px 24px;
-  font-size: 16px;
-  border-radius: 4px;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-radius: 0.5rem;
   cursor: pointer;
-  
-  &:hover {
+  transition: all 0.3s ease;
+
+  &:hover:not(:disabled) {
     background-color: #9bd327;
+    transform: translateY(-2px);
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
   }
 }
 
-.racing-panel {
+.race-active {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.speedometer-container {
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+  background: #f8fafc;
+  border-radius: 1rem;
+  border: 2px solid #e2e8f0;
+}
+
+.racetrack-container {
+  background: #f1f5f9;
+  padding: 1rem;
+  border-radius: 1rem;
+  border: 2px solid #cbd5e1;
+}
+
+.typing-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.race-completed {
+  text-align: center;
+  padding: 2rem;
+  background: #f0fdf4;
+  border: 2px solid #86efac;
+  border-radius: 1rem;
+
+  h2 {
+    margin-bottom: 0.5rem;
+  }
+
+  p {
+    color: #166534;
+  }
+}
+
+@media (max-width: 768px) {
+  .race-container {
+    padding: 0.5rem;
+    gap: 1rem;
+  }
+
+  .speedometer-container,
+  .racetrack-container {
+    padding: 0.5rem;
+  }
 }
 </style>
