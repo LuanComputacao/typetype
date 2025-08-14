@@ -1,7 +1,7 @@
 <template>
   <div class="car" :class="carClasses" :style="carStyles">
-    <!-- Smoke effect for high speed -->
-    <div v-if="isHighSpeed" class="car__smoke">
+    <!-- Smoke effect for any speed above minimum -->
+    <div v-if="props.speed > props.minSpeed" class="car__smoke">
       <div
         v-for="(particle, index) in smokeParticles"
         :key="`particle-${index}`"
@@ -55,15 +55,13 @@ const speedPercentage = computed(() => {
 // Determine if speed is high enough for smoke effect (starts at 20% speed)
 const isHighSpeed = computed(() => speedPercentage.value > 0.2)
 
-// Calculate vibration intensity based on speed
-const vibrationIntensity = computed(() => {
-  return Math.max(1, speedPercentage.value * 5) // Min 1px, max 5px
-})
-
 // Generate smoke particles based on speed
 const smokeParticles = computed(() => {
+  // Se não há velocidade, não há fumaça
+  if (props.speed <= props.minSpeed) return []
+  
   // Ajusta a quantidade de partículas baseado na velocidade
-  // 20% velocidade = 1-2 partículas, 100% velocidade = 8 partículas
+  // Velocidade mínima = 1 partícula, 100% velocidade = 8 partículas
   const minParticles = 1
   const maxParticles = 8
   const particleCount = Math.ceil(
@@ -121,7 +119,6 @@ const carClasses = computed(() => [
     'car--animated': props.animated,
     'car--driving': props.driving,
     'car--high-speed': isHighSpeed.value,
-    'car--vibrating': props.speed > props.minSpeed,
   },
 ])
 
@@ -131,7 +128,6 @@ const carStyles = computed(() => ({
   ...(props.width && { width: props.width }),
   ...(props.height && { height: props.height }),
   ...(props.speed > props.minSpeed && {
-    '--vibration-intensity': `${vibrationIntensity.value}px`,
     '--speed-percentage': speedPercentage.value,
   }),
 }))
@@ -153,7 +149,7 @@ const carStyles = computed(() => ({
     top: 50%;
     transform: translateY(-50%);
     pointer-events: none;
-    z-index: -1;
+    z-index: 1;
   }
 
   &__image {
@@ -162,7 +158,7 @@ const carStyles = computed(() => ({
     height: auto;
     object-fit: contain;
     position: relative;
-    z-index: 1;
+    z-index: 2;
   }
 
   // Size variants
@@ -243,11 +239,6 @@ const carStyles = computed(() => ({
     animation: drive 3s linear infinite;
   }
 
-  // Vibration effect based on speed
-  &--vibrating {
-    animation: vibrate calc(0.1s / var(--speed-percentage, 1)) ease-in-out infinite;
-  }
-
   // High speed effects
   &--high-speed {
     .car__image {
@@ -263,27 +254,12 @@ const carStyles = computed(() => ({
   height: var(--particle-size, 8px);
   background: radial-gradient(
     circle,
-    rgba(128, 128, 128, calc(0.3 + var(--speed-percentage, 0.5) * 0.4)),
+    rgba(128, 128, 128, calc(0.5 + var(--speed-percentage, 0.2) * 0.3)),
     transparent
   );
   border-radius: 50%;
   right: var(--offset-x, 0px);
   top: var(--offset-y, 0px);
-}
-
-@keyframes vibrate {
-  0%,
-  100% {
-    transform: translateX(0) translateY(0);
-  }
-  25% {
-    transform: translateX(var(--vibration-intensity, 2px))
-      translateY(calc(var(--vibration-intensity, 2px) * -0.5));
-  }
-  75% {
-    transform: translateX(calc(var(--vibration-intensity, 2px) * -1))
-      translateY(var(--vibration-intensity, 2px));
-  }
 }
 
 @keyframes smoke {
