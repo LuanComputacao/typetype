@@ -11,12 +11,19 @@
       ></div>
     </div>
 
-    <img :src="carSvg" :alt="`Car variant ${variant}`" class="car__image" />
+    <!-- SVG content using v-html for direct color control -->
+    <div class="car__svg" v-html="carSvgContent"></div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
+
+// Import SVGs as raw strings for direct manipulation
+import Car1Svg from '../assets/car_1.svg?raw'
+import Car2Svg from '../assets/car_2.svg?raw'
+import Car3Svg from '../assets/car_3.svg?raw'
+import Car4Svg from '../assets/car_4.svg?raw'
 
 interface Props {
   variant?: 1 | 2 | 3 | 4
@@ -43,7 +50,15 @@ const props = withDefaults(defineProps<Props>(), {
   maxSpeed: 100,
 })
 
-// TODO: replace with pinia controller
+// Simplified color application - just set CSS color property
+const getColorStyles = (color?: string): Record<string, string> => {
+  if (!color) return {}
+  
+  // With SVG raw import, we can directly set the color
+  return {
+    color: color,
+  }
+}
 
 // Calculate speed percentage (0-1)
 const speedPercentage = computed(() => {
@@ -95,19 +110,19 @@ const smokeParticles = computed(() => {
   return particles
 })
 
-// Car SVG selection based on variant using dynamic imports
-const carSvg = computed(() => {
+// Car SVG content selection based on variant using raw imports
+const carSvgContent = computed(() => {
   switch (props.variant) {
     case 1:
-      return '/src/assets/car_1.svg'
+      return Car1Svg
     case 2:
-      return '/src/assets/car_2.svg'
+      return Car2Svg
     case 3:
-      return '/src/assets/car_3.svg'
+      return Car3Svg
     case 4:
-      return '/src/assets/car_4.svg'
+      return Car4Svg
     default:
-      return '/src/assets/car_1.svg'
+      return Car1Svg
   }
 })
 
@@ -124,7 +139,7 @@ const carClasses = computed(() => [
 
 // Dynamic styles
 const carStyles = computed(() => ({
-  ...(props.color && { filter: `hue-rotate(${props.color})` }),
+  ...getColorStyles(props.color),
   ...(props.width && { width: props.width }),
   ...(props.height && { height: props.height }),
   ...(props.speed > props.minSpeed && {
@@ -152,20 +167,26 @@ const carStyles = computed(() => ({
     z-index: 1;
   }
 
-  &__image {
+  &__svg {
     display: block;
     width: 100%;
     height: auto;
-    object-fit: contain;
     position: relative;
     z-index: 2;
+
+    // Ensure SVG scales properly
+    svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
   }
 
   // Size variants
   &--small {
     width: $car-small;
 
-    .car__image {
+    .car__svg {
       max-width: $car-small;
     }
   }
@@ -173,7 +194,7 @@ const carStyles = computed(() => ({
   &--medium {
     width: $car-medium;
 
-    .car__image {
+    .car__svg {
       max-width: $car-medium;
     }
   }
@@ -181,7 +202,7 @@ const carStyles = computed(() => ({
   &--large {
     width: $car-large;
 
-    .car__image {
+    .car__svg {
       max-width: $car-large;
     }
   }
@@ -192,7 +213,7 @@ const carStyles = computed(() => ({
 
   // Direction variants
   &--left {
-    .car__image {
+    .car__svg {
       transform: scaleX(-1);
     }
 
@@ -209,7 +230,7 @@ const carStyles = computed(() => ({
   }
 
   &--right {
-    .car__image {
+    .car__svg {
       transform: scaleX(1);
     }
 
@@ -229,7 +250,7 @@ const carStyles = computed(() => ({
       transform: translateY(-2px);
     }
 
-    .car__image {
+    .car__svg {
       transition: transform 0.3s ease;
     }
   }
@@ -241,7 +262,7 @@ const carStyles = computed(() => ({
 
   // High speed effects
   &--high-speed {
-    .car__image {
+    .car__svg {
       filter: blur(0.5px);
     }
   }

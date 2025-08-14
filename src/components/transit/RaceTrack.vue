@@ -3,17 +3,14 @@
     <!-- Pista principal -->
     <div class="race-track__road">
       <!-- Faixas da pista -->
-      <div 
-        v-for="lane in lanes" 
-        :key="`lane-${lane}`" 
+      <div
+        v-for="lane in lanes"
+        :key="`lane-${lane}`"
         class="race-track__lane"
         :class="`race-track__lane--${lane}`"
       >
         <!-- Linha divisória pontilhada (exceto na última faixa) -->
-        <div 
-          v-if="lane < lanes" 
-          class="race-track__divider"
-        ></div>
+        <div v-if="lane < lanes" class="race-track__divider"></div>
       </div>
 
       <!-- Carros na pista -->
@@ -27,6 +24,7 @@
           :variant="car.variant"
           :size="car.size || 'small'"
           :color="car.color"
+          :color-mode="car.colorMode || 'filter'"
           :direction="car.direction || 'right'"
           :animated="car.animated"
           :driving="car.driving"
@@ -49,6 +47,7 @@ interface RaceCarProps {
   variant?: 1 | 2 | 3 | 4
   size?: 'small' | 'medium' | 'large'
   color?: string
+  colorMode?: 'filter' | 'overlay' | 'replace'
   direction?: 'left' | 'right'
   animated?: boolean
   driving?: boolean
@@ -77,11 +76,11 @@ const props = withDefaults(defineProps<Props>(), {
 const getCarPosition = (car: RaceCarProps, index: number) => {
   const position = car.position || 0 // Posição horizontal em %
   const lane = car.lane || (index % props.lanes) + 1 // Faixa automática se não especificada
-  
+
   // Calcula a posição vertical baseada na faixa
   const laneHeight = 100 / props.lanes
   const laneCenter = (lane - 1) * laneHeight + laneHeight / 2
-  
+
   return {
     left: `${position}%`,
     top: `${laneCenter}%`,
@@ -106,15 +105,16 @@ const getCarPosition = (car: RaceCarProps, index: number) => {
     position: relative;
     width: 100%;
     height: 100%;
-    background: #1a1a1a; // Asfalto preto base
-    
+    background: #b3b3b3; // Asfalto preto base
+    $gradient-color: #a5a5a5;
+    $pattern-size: 10px;
+
     // Padrão xadrez sutil no asfalto
-    background-image: 
-      linear-gradient(45deg, #222 25%, transparent 25%),
-      linear-gradient(-45deg, #222 25%, transparent 25%),
-      linear-gradient(45deg, transparent 75%, #222 75%),
-      linear-gradient(-45deg, transparent 75%, #222 75%);
-    background-size: 20px 20px;
+    background-image: linear-gradient(45deg, $gradient-color 25%, transparent 25%),
+      linear-gradient(-45deg, $gradient-color 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, $gradient-color 75%),
+      linear-gradient(-45deg, transparent 75%, $gradient-color 75%);
+    background-size: $pattern-size $pattern-size;
     background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
   }
 
@@ -122,7 +122,7 @@ const getCarPosition = (car: RaceCarProps, index: number) => {
     position: absolute;
     width: 100%;
     height: calc(100% / v-bind('props.lanes'));
-    
+
     // Posicionamento das faixas
     @for $i from 1 through 10 {
       &--#{$i} {
@@ -158,15 +158,9 @@ const getCarPosition = (car: RaceCarProps, index: number) => {
     top: 0;
     width: 4px;
     height: 100%;
-    background: repeating-linear-gradient(
-      to bottom,
-      white 0,
-      white 15px,
-      #000 15px,
-      #000 30px
-    );
+    background: repeating-linear-gradient(to bottom, white 0, white 15px, #000 15px, #000 30px);
     z-index: 5;
-    
+
     &::before {
       content: '🏁';
       position: absolute;
@@ -177,7 +171,7 @@ const getCarPosition = (car: RaceCarProps, index: number) => {
       background: white;
       padding: 2px 4px;
       border-radius: 4px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     }
   }
 }
