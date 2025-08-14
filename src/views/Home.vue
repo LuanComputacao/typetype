@@ -115,31 +115,6 @@
       <div class="mb-8">
         <h3 class="text-xl font-medium mb-4">🎨 Cores dos Carros</h3>
 
-        <!-- Fix notification -->
-        <div class="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg">
-          <div class="flex items-center">
-            <span class="text-green-600 mr-2">✅</span>
-            <div class="text-green-800">
-              <strong>Problema corrigido!</strong> As cores dos SVGs agora funcionam corretamente.
-              <details class="mt-2">
-                <summary class="cursor-pointer text-green-700 hover:text-green-900">
-                  Ver detalhes da correção
-                </summary>
-                <div class="mt-2 text-green-700 text-sm">
-                  <ul class="list-disc list-inside space-y-1">
-                    <li>
-                      Adicionado suporte para <code>colorMode</code> (filter, overlay, replace)
-                    </li>
-                    <li>Definida cor base CSS para que <code>currentColor</code> funcione</li>
-                    <li>Mapeamento de cores nomeadas para valores de rotação</li>
-                    <li>Três modos diferentes de colorização disponíveis</li>
-                  </ul>
-                </div>
-              </details>
-            </div>
-          </div>
-        </div>
-
         <p class="text-gray-700 mb-4">
           Os carros suportam diferentes modos de colorização: filtro (hue-rotate), sobreposição e
           substituição.

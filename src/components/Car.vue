@@ -53,7 +53,7 @@ const props = withDefaults(defineProps<Props>(), {
 // Simplified color application - just set CSS color property
 const getColorStyles = (color?: string): Record<string, string> => {
   if (!color) return {}
-  
+
   // With SVG raw import, we can directly set the color
   return {
     color: color,
@@ -270,12 +270,14 @@ const carStyles = computed(() => ({
 
 // Smoke particles
 .smoke-particle {
+  $color-exa: 70;
+
   position: absolute;
   width: var(--particle-size, 8px);
   height: var(--particle-size, 8px);
   background: radial-gradient(
     circle,
-    rgba(128, 128, 128, calc(0.5 + var(--speed-percentage, 0.2) * 0.3)),
+    rgba($color-exa, $color-exa, $color-exa, calc(0.5 + var(--speed-percentage, 0.2) * 0.3)),
     transparent
   );
   border-radius: 50%;
