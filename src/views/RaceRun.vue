@@ -87,8 +87,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import Race from '@/components/racing/Race.vue'
+import { useRaceStore } from '@/stores/race'
 
 interface RacerData {
   name: string
@@ -98,17 +99,20 @@ interface RacerData {
   wpmHistory?: number[]
 }
 
+// Use the race store
+const raceStore = useRaceStore()
+
 // Reactive state for results only
 const showResults = ref(false)
 const raceStats = ref<RacerData | null>(null)
 
-// Final stats for results
-const finalStats = ref({
-  wpm: 0,
-  words: 0,
-  time: '0:00',
-  progress: 0
-})
+// Final stats for results using store data
+const finalStats = computed(() => ({
+  wpm: Math.round(raceStore.racer.wpm),
+  words: raceStore.racer.wordsTyped,
+  time: raceStore.formattedTime,
+  progress: Math.round(raceStore.racer.progress)
+}))
 
 // Computed properties
 const performanceLevel = computed(() => {
@@ -120,35 +124,24 @@ const performanceLevel = computed(() => {
   return '🎯 Iniciante'
 })
 
+// Watch for race completion
+watch(() => raceStore.isTypingDone, (isDone) => {
+  if (isDone) {
+    setTimeout(() => {
+      showResults.value = true
+    }, 1000) // Show results after a brief delay
+  }
+}, { immediate: false })
+
 // Methods
 const handleRaceUpdate = (racer: RacerData) => {
   raceStats.value = racer
-
-  // Check if race is complete
-  if (racer.progress >= 100) {
-    completeRace(racer)
-  }
-}
-
-const completeRace = (racer: RacerData) => {
-  finalStats.value = {
-    wpm: Math.round(racer.wpm || 0),
-    words: Math.floor(racer.progress / 5), // Estimate words based on progress
-    time: '0:00', // Time will be calculated in Race component
-    progress: Math.round(racer.progress)
-  }
-
-  setTimeout(() => {
-    showResults.value = true
-  }, 1000) // Show results after a brief delay
 }
 
 const restartRace = () => {
   showResults.value = false
   raceStats.value = null
-
-  // Reload the page to restart the race component
-  window.location.reload()
+  raceStore.resetRace()
 }
 
 const closeResults = () => {
