@@ -39,10 +39,6 @@
     <div class="mb-12">
       <h2 class="text-3xl font-semibold mb-6 text-blue-600">🚗 Componente Carro</h2>
 
-      <div class="mb-8">
-        <CarTunning />
-      </div>
-
       <!-- Car Variants -->
       <div class="mb-8">
         <h3 class="text-xl font-medium mb-4">Variantes de Carros</h3>

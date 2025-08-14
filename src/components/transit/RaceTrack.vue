@@ -102,12 +102,13 @@ const getCarPosition = (car: RaceCarProps, index: number) => {
   background: #2a5934; // Grama nas laterais
 
   &__road {
+    $gradient-color: #a5a5a5;
+    $pattern-size: 10px;
+
     position: relative;
     width: 100%;
     height: 100%;
     background: #b3b3b3; // Asfalto preto base
-    $gradient-color: #a5a5a5;
-    $pattern-size: 10px;
 
     // Padrão xadrez sutil no asfalto
     background-image: linear-gradient(45deg, $gradient-color 25%, transparent 25%),
