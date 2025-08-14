@@ -59,7 +59,7 @@ const isHighSpeed = computed(() => speedPercentage.value > 0.2)
 const smokeParticles = computed(() => {
   // Se não há velocidade, não há fumaça
   if (props.speed <= props.minSpeed) return []
-  
+
   // Ajusta a quantidade de partículas baseado na velocidade
   // Velocidade mínima = 1 partícula, 100% velocidade = 8 partículas
   const minParticles = 1

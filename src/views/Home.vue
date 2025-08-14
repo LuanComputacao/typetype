@@ -111,7 +111,8 @@
       <div class="mb-8">
         <h3 class="text-xl font-medium mb-4">🏎️ Efeitos de Velocidade</h3>
         <p class="text-gray-700 mb-4">
-          Os carros têm efeitos visuais baseados na velocidade com fumaça que aumenta proporcionalmente.
+          Os carros têm efeitos visuais baseados na velocidade com fumaça que aumenta
+          proporcionalmente.
         </p>
 
         <!-- Speed demonstrations -->
@@ -122,9 +123,7 @@
             <div class="bg-white p-4 rounded-lg flex justify-center">
               <Car :variant="1" :speed="20" :min-speed="0" :max-speed="100" size="medium" />
             </div>
-            <p class="text-sm text-gray-600 mt-2">
-              ✨ Fumaça sutil (1-2 partículas)
-            </p>
+            <p class="text-sm text-gray-600 mt-2">✨ Fumaça sutil (1-2 partículas)</p>
             <p class="text-xs text-gray-500 mt-1">Motor irregular em baixa rotação</p>
           </div>
 
@@ -134,9 +133,7 @@
             <div class="bg-white p-4 rounded-lg flex justify-center">
               <Car :variant="2" :speed="50" :min-speed="0" :max-speed="100" size="medium" />
             </div>
-            <p class="text-sm text-gray-600 mt-2">
-              ⚡ Fumaça média (3-4 partículas)
-            </p>
+            <p class="text-sm text-gray-600 mt-2">⚡ Fumaça média (3-4 partículas)</p>
             <p class="text-xs text-gray-500 mt-1">Motor se estabilizando</p>
           </div>
 
@@ -146,9 +143,7 @@
             <div class="bg-white p-4 rounded-lg flex justify-center">
               <Car :variant="3" :speed="80" :min-speed="0" :max-speed="100" size="medium" />
             </div>
-            <p class="text-sm text-gray-600 mt-2">
-              💨 Fumaça densa (6-7 partículas)
-            </p>
+            <p class="text-sm text-gray-600 mt-2">💨 Fumaça densa (6-7 partículas)</p>
             <p class="text-xs text-gray-500 mt-1">Motor estável, maior esforço</p>
           </div>
 
@@ -158,9 +153,7 @@
             <div class="bg-white p-4 rounded-lg flex justify-center">
               <Car :variant="4" :speed="100" :min-speed="0" :max-speed="100" size="medium" />
             </div>
-            <p class="text-sm text-gray-600 mt-2">
-              🔥 Fumaça intensa (8 partículas)
-            </p>
+            <p class="text-sm text-gray-600 mt-2">🔥 Fumaça intensa (8 partículas)</p>
             <p class="text-xs text-gray-500 mt-1">Máximo desempenho do motor</p>
           </div>
         </div>
@@ -175,6 +168,98 @@
             <li>Velocidade baixa: Pouco esforço = pouca fumaça</li>
             <li>Velocidade alta: Muito esforço = muita fumaça</li>
             <li>Varia de 1-2 partículas até 8 partículas</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Race Track -->
+    <div class="mb-8">
+      <h3 class="text-xl font-medium mb-4">🏁 Pista de Corrida</h3>
+      <p class="text-gray-700 mb-4">
+        Pista horizontal de asfalto preto com padrão xadrez e separação pontilhada entre faixas.
+        Os carros são posicionados por porcentagem na pista.
+      </p>
+
+      <!-- Demonstração básica -->
+      <div class="mb-6">
+        <h4 class="text-lg font-medium mb-2">Corrida de Demonstração</h4>
+        <RaceTrack 
+          :lanes="3"
+          track-height="200px"
+          :cars="[
+            { variant: 1, position: 15, lane: 1, speed: 40, size: 'small' },
+            { variant: 2, position: 35, lane: 2, speed: 60, size: 'small' },
+            { variant: 3, position: 55, lane: 3, speed: 80, size: 'small' },
+            { variant: 4, position: 75, lane: 1, speed: 100, size: 'small' }
+          ]"
+        />
+        <p class="text-sm text-gray-600 mt-2">
+          4 carros em 3 faixas com diferentes posições e velocidades
+        </p>
+      </div>
+
+      <!-- Corrida mais complexa -->
+      <div class="mb-6">
+        <h4 class="text-lg font-medium mb-2">Corrida com 4 Faixas</h4>
+        <RaceTrack 
+          :lanes="4"
+          track-height="250px"
+          :cars="[
+            { variant: 1, position: 10, lane: 1, speed: 30, direction: 'right' },
+            { variant: 2, position: 25, lane: 2, speed: 50, direction: 'right' },
+            { variant: 3, position: 45, lane: 3, speed: 70, direction: 'right' },
+            { variant: 4, position: 60, lane: 4, speed: 90, direction: 'right' },
+            { variant: 1, position: 80, lane: 2, speed: 20, direction: 'right' },
+            { variant: 3, position: 90, lane: 1, speed: 40, direction: 'right' }
+          ]"
+        />
+        <p class="text-sm text-gray-600 mt-2">
+          6 carros em 4 faixas com diferentes estratégias de corrida
+        </p>
+      </div>
+
+      <!-- Corrida animada -->
+      <div class="mb-6">
+        <h4 class="text-lg font-medium mb-2">Corrida Animada em Progresso</h4>
+        <RaceTrack 
+          :lanes="3"
+          track-height="180px"
+          :cars="animatedRaceCars"
+        />
+        <div class="flex gap-2 mt-2">
+          <button 
+            @click="startRace" 
+            class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm"
+            :disabled="raceRunning"
+          >
+            🏁 Iniciar Corrida
+          </button>
+          <button 
+            @click="resetRace" 
+            class="bg-gray-500 hover:bg-gray-600 text-white px-3 py-1 rounded text-sm"
+          >
+            🔄 Resetar
+          </button>
+        </div>
+        <p class="text-sm text-gray-600 mt-1">
+          Clique para ver os carros avançarem automaticamente na pista
+        </p>
+      </div>
+
+      <!-- Características da pista -->
+      <div class="bg-blue-50 p-4 rounded-lg">
+        <h4 class="font-medium text-blue-800 mb-2">🔧 Características da Pista:</h4>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-blue-700 text-sm">
+          <ul class="list-disc list-inside space-y-1">
+            <li><strong>Asfalto:</strong> Preto com padrão xadrez sutil</li>
+            <li><strong>Faixas:</strong> Separadas por linhas pontilhadas brancas</li>
+            <li><strong>Linha de largada:</strong> Xadrez preto e branco com bandeira 🏁</li>
+          </ul>
+          <ul class="list-disc list-inside space-y-1">
+            <li><strong>Posicionamento:</strong> Por porcentagem (0-100%)</li>
+            <li><strong>Faixas configuráveis:</strong> 1 a N faixas</li>
+            <li><strong>Carros:</strong> Automáticamente centralizados na faixa</li>
           </ul>
         </div>
       </div>
@@ -211,6 +296,7 @@ import { ref, onMounted, onUnmounted } from 'vue'
 
 import SemaphoreLights from '@/components/transit/SemaphoreLights.vue'
 import Car from '@/components/Car.vue'
+import RaceTrack from '@/components/transit/RaceTrack.vue'
 
 const counter = ref(0)
 let intervalId: ReturnType<typeof setInterval> | null = null
