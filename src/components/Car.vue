@@ -2,7 +2,11 @@
   <div class="car" :class="carClasses" :style="carStyles">
     <!-- Smoke effect for any speed above minimum -->
     <div v-if="props.speed > props.minSpeed" class="car__smoke">
+      <img v-if="props.lowRes" src="@/assets/smoke.gif" alt="Smoke effect" class="car__smoke-gif"
+      :style="{ opacity: smokeGifTransparency }"
+      />
       <div
+        v-else
         v-for="(particle, index) in smokeParticles"
         :key="`particle-${index}`"
         class="smoke-particle"
@@ -11,7 +15,10 @@
       ></div>
     </div>
 
-    <!-- SVG content using v-html for direct color control -->
+    <div v-else class="car__smoke"></div>
+
+    <div class="car__shadow"></div>
+
     <div class="car__svg" v-html="carSvgContent"></div>
   </div>
 </template>
@@ -37,6 +44,7 @@ interface Props {
   maxSpeed?: number
   width?: string
   height?: string
+  lowRes?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -48,6 +56,7 @@ const props = withDefaults(defineProps<Props>(), {
   speed: 0,
   minSpeed: 0,
   maxSpeed: 100,
+  lowRes: true
 })
 
 // Simplified color application - just set CSS color property
@@ -70,15 +79,19 @@ const speedPercentage = computed(() => {
 // Determine if speed is high enough for smoke effect (starts at 20% speed)
 const isHighSpeed = computed(() => speedPercentage.value > 0.2)
 
+const smokeGifTransparency = computed(() => {
+  // Opacity varies from 0.3 at 20% speed to 1.0 at 100% speed
+  if (speedPercentage.value <= 0.2) return 0
+  return 0.3 + (speedPercentage.value - 0.2) * (0.7 / 0.8)
+})
+
 // Generate smoke particles based on speed
 const smokeParticles = computed(() => {
-  // Se não há velocidade, não há fumaça
-  if (props.speed <= props.minSpeed) return []
 
   // Ajusta a quantidade de partículas baseado na velocidade
   // Velocidade mínima = 1 partícula, 100% velocidade = 8 partículas
-  const minParticles = 1
-  const maxParticles = 8
+  const minParticles = 3
+  const maxParticles = 10
   const particleCount = Math.ceil(
     minParticles + speedPercentage.value * (maxParticles - minParticles)
   )
@@ -182,6 +195,19 @@ const carStyles = computed(() => ({
     }
   }
 
+  &__shadow {
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 85%;
+    height: 15px;
+    background: radial-gradient(ellipse, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.15) 50%, rgba(0, 0, 0, 0.05) 75%, transparent 100%);
+    border-radius: 50%;
+    z-index: 1;
+    transition: all 0.3s ease;
+  }
+
   // Size variants
   &--small {
     width: $car-small;
@@ -217,6 +243,10 @@ const carStyles = computed(() => ({
       transform: scaleX(-1);
     }
 
+    .car__smoke-gif {
+      // right: -100px;
+    }
+
     .car__smoke {
       right: -10px; // Fumaça sai da traseira (lado direito quando virado para esquerda)
     }
@@ -234,6 +264,10 @@ const carStyles = computed(() => ({
       transform: scaleX(1);
     }
 
+    .car__smoke-gif {
+      left: -80%;
+    }
+
     .car__smoke {
       left: -10px; // Fumaça sai da traseira (lado esquerdo quando virado para direita)
     }
@@ -248,6 +282,11 @@ const carStyles = computed(() => ({
   &--animated {
     &:hover {
       transform: translateY(-2px);
+
+      .car__shadow {
+        transform: translateX(-50%) scaleX(0.9);
+        opacity: 0.7;
+      }
     }
 
     .car__svg {
@@ -258,6 +297,10 @@ const carStyles = computed(() => ({
   // Add driving animation
   &--driving {
     animation: drive 3s linear infinite;
+
+    .car__shadow {
+      animation: shadow-drive 3s linear infinite;
+    }
   }
 
   // High speed effects
@@ -265,6 +308,19 @@ const carStyles = computed(() => ({
     .car__svg {
       filter: blur(0.5px);
     }
+
+    .car__shadow {
+      transform: translateX(-50%) scaleX(1.2);
+      opacity: 0.5;
+    }
+  }
+
+  &__smoke-gif {
+    transform: rotate(-20deg);
+    width: 100%;
+    height: auto;
+    position: relative;
+    top: 50%;
   }
 }
 
@@ -328,6 +384,21 @@ const carStyles = computed(() => ({
   }
   100% {
     transform: translateX(100vw);
+  }
+}
+
+@keyframes shadow-drive {
+  0% {
+    transform: translateX(-50%) scaleX(0.8);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translateX(-50%) scaleX(1.1);
+    opacity: 0.4;
+  }
+  100% {
+    transform: translateX(-50%) scaleX(0.8);
+    opacity: 0.3;
   }
 }
 </style>

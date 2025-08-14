@@ -421,6 +421,132 @@
       </div>
     </div>
 
+    <!-- Speedometer -->
+    <div class="mb-12">
+      <h2 class="text-3xl font-semibold mb-6 text-purple-600">📊 Componente Velocímetro Digital</h2>
+      <p class="text-gray-700 mb-4">
+        Velocímetro digital que mostra velocidade atual (w/m) com barra de progresso visual e LEDs.
+      </p>
+
+      <!-- Basic Speedometer Examples -->
+      <div class="mb-8">
+        <h3 class="text-xl font-medium mb-4">Diferentes Velocidades</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Low speed -->
+          <div class="bg-gray-50 p-4 rounded-lg border">
+            <h4 class="text-lg font-medium mb-3">🐌 Velocidade Baixa</h4>
+            <div class="bg-white p-4 rounded-lg flex justify-center">
+              <SpeedometerDigital :velocity="32" :velocity-last-word="28" />
+            </div>
+            <p class="text-sm text-gray-600 mt-2">32 w/m total, 28 w/m última palavra</p>
+          </div>
+
+          <!-- Medium speed -->
+          <div class="bg-gray-50 p-4 rounded-lg border">
+            <h4 class="text-lg font-medium mb-3">⚡ Velocidade Média</h4>
+            <div class="bg-white p-4 rounded-lg flex justify-center">
+              <SpeedometerDigital :velocity="85" :velocity-last-word="78" />
+            </div>
+            <p class="text-sm text-gray-600 mt-2">85 w/m total, 78 w/m última palavra</p>
+          </div>
+
+          <!-- High speed -->
+          <div class="bg-gray-50 p-4 rounded-lg border">
+            <h4 class="text-lg font-medium mb-3">🚀 Velocidade Alta</h4>
+            <div class="bg-white p-4 rounded-lg flex justify-center">
+              <SpeedometerDigital :velocity="156" :velocity-last-word="142" />
+            </div>
+            <p class="text-sm text-gray-600 mt-2">156 w/m total, 142 w/m última palavra</p>
+          </div>
+
+          <!-- Maximum speed -->
+          <div class="bg-gray-50 p-4 rounded-lg border">
+            <h4 class="text-lg font-medium mb-3">🔥 Velocidade Máxima</h4>
+            <div class="bg-white p-4 rounded-lg flex justify-center">
+              <SpeedometerDigital :velocity="256" :velocity-last-word="250" />
+            </div>
+            <p class="text-sm text-gray-600 mt-2">256 w/m total (máximo), 250 w/m última palavra</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Real-time Speedometer -->
+      <div class="mb-8">
+        <h3 class="text-xl font-medium mb-4">Velocímetro em Tempo Real</h3>
+        <div class="bg-gray-50 p-6 rounded-lg border">
+          <div class="bg-white p-4 rounded-lg flex justify-center mb-4">
+            <SpeedometerDigital :velocity="realtimeSpeed" :velocity-last-word="realtimeLastWordSpeed" />
+          </div>
+          <div class="flex gap-2 justify-center">
+            <button
+              @click="startSpeedTest"
+              class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded text-sm"
+              :disabled="speedTestRunning"
+            >
+              🏃 Iniciar Teste de Velocidade
+            </button>
+            <button
+              @click="stopSpeedTest"
+              class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded text-sm"
+            >
+              ⏹️ Parar
+            </button>
+            <button
+              @click="resetSpeedTest"
+              class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded text-sm"
+            >
+              🔄 Resetar
+            </button>
+          </div>
+          <p class="text-sm text-gray-600 mt-2 text-center">
+            Simula digitação em tempo real com velocidade variável
+          </p>
+        </div>
+      </div>
+
+      <!-- Speedometer Comparison -->
+      <div class="mb-8">
+        <h3 class="text-xl font-medium mb-4">Comparação de Velocidades</h3>
+        <div class="bg-gray-50 p-6 rounded-lg border">
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <div class="text-center">
+              <h4 class="text-sm font-medium mb-2">Iniciante</h4>
+              <SpeedometerDigital :velocity="25" :velocity-last-word="22" />
+              <p class="text-xs text-gray-600 mt-1">25 w/m</p>
+            </div>
+            <div class="text-center">
+              <h4 class="text-sm font-medium mb-2">Intermediário</h4>
+              <SpeedometerDigital :velocity="65" :velocity-last-word="61" />
+              <p class="text-xs text-gray-600 mt-1">65 w/m</p>
+            </div>
+            <div class="text-center">
+              <h4 class="text-sm font-medium mb-2">Avançado</h4>
+              <SpeedometerDigital :velocity="120" :velocity-last-word="115" />
+              <p class="text-xs text-gray-600 mt-1">120 w/m</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Speedometer Features -->
+      <div class="bg-purple-50 p-6 rounded-lg">
+        <h3 class="font-medium text-purple-800 mb-3">⚙️ Características do Velocímetro:</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-purple-700 text-sm">
+          <ul class="list-disc list-inside space-y-1">
+            <li><strong>Barra de Progresso:</strong> Visual com LEDs verdes</li>
+            <li><strong>Velocidade Atual:</strong> w/m da última palavra digitada</li>
+            <li><strong>Velocidade Total:</strong> w/m média geral</li>
+            <li><strong>Máximo:</strong> 256 w/m (palavras por minuto)</li>
+          </ul>
+          <ul class="list-disc list-inside space-y-1">
+            <li><strong>Display Digital:</strong> Fonte monoespaçada</li>
+            <li><strong>Cores:</strong> Verde para atual, amarelo para total</li>
+            <li><strong>Responsivo:</strong> Adapta-se ao container</li>
+            <li><strong>Tempo Real:</strong> Atualização dinâmica</li>
+          </ul>
+        </div>
+      </div>
+    </div>
     <!-- Technical Info -->
     <div class="bg-gray-100 p-6 rounded-lg">
       <h3 class="text-lg font-medium mb-3">⚙️ Informações Técnicas</h3>
@@ -466,6 +592,7 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import SemaphoreLights from '@/components/transit/SemaphoreLights.vue'
 import Car from '@/components/Car.vue'
 import RaceTrack from '@/components/transit/RaceTrack.vue'
+import SpeedometerDigital from '@/components/driver/SpeedometerDigital.vue'
 
 const counter = ref(0)
 let intervalId: ReturnType<typeof setInterval> | null = null
@@ -473,6 +600,12 @@ let intervalId: ReturnType<typeof setInterval> | null = null
 // Corrida animada
 const raceRunning = ref(false)
 let raceIntervalId: ReturnType<typeof setInterval> | null = null
+
+// Velocímetro em tempo real
+const realtimeSpeed = ref(0)
+const realtimeLastWordSpeed = ref(0)
+const speedTestRunning = ref(false)
+let speedTestIntervalId: ReturnType<typeof setInterval> | null = null
 
 const animatedRaceCars = ref([
   {
@@ -545,6 +678,37 @@ const resetRace = () => {
   })
 }
 
+// Funções do velocímetro
+const startSpeedTest = () => {
+  if (speedTestRunning.value) return
+
+  speedTestRunning.value = true
+  
+  speedTestIntervalId = setInterval(() => {
+    // Simula variação na velocidade de digitação
+    const targetSpeed = 40 + Math.random() * 80 // 40-120 w/m
+    const targetLastWord = targetSpeed + (Math.random() - 0.5) * 20 // Variação na última palavra
+    
+    // Suaviza a transição
+    realtimeSpeed.value += (targetSpeed - realtimeSpeed.value) * 0.1
+    realtimeLastWordSpeed.value += (Math.max(0, targetLastWord) - realtimeLastWordSpeed.value) * 0.15
+  }, 100)
+}
+
+const stopSpeedTest = () => {
+  speedTestRunning.value = false
+  if (speedTestIntervalId) {
+    clearInterval(speedTestIntervalId)
+    speedTestIntervalId = null
+  }
+}
+
+const resetSpeedTest = () => {
+  stopSpeedTest()
+  realtimeSpeed.value = 0
+  realtimeLastWordSpeed.value = 0
+}
+
 onMounted(() => {
   intervalId = setInterval(() => {
     counter.value++
@@ -560,6 +724,9 @@ onUnmounted(() => {
   }
   if (raceIntervalId) {
     clearInterval(raceIntervalId)
+  }
+  if (speedTestIntervalId) {
+    clearInterval(speedTestIntervalId)
   }
 })
 </script>
